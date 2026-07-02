@@ -216,6 +216,6 @@ By combining **SQL, Excel, Power Query, and Business Intelligence techniques**, 
 
 ### 👩‍💻 Developed by 
 Sukanya Saha 
-Research Scholar,CSIR-IICT Hyderabad
-MSC in Chemistry (IIT Madras)
+Research Scholar,CSIR-IICT Hyderabad|
+MSC in Chemistry (IIT Madras)|
 🔬 Chemist | 📊 Aspiring Data Scientist | 📈 Data Analytics Enthusiast
