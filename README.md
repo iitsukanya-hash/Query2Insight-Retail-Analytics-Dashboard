@@ -1,221 +1,85 @@
-# 📊 Query2Insight: Retail Analytics Dashboard 🚀
+# Query2Insight: Retail Analytics Dashboard
 
-## 🌟 Project Overview
+An end-to-end retail analytics project: raw CSV data is cleaned and analysed in **MySQL**, joined with **Power Query**, and presented as an interactive **Excel dashboard** (Pivot Tables, Pivot Charts, Slicers, KPI cards).
 
-**Query2Insight** is an end-to-end **Retail Analytics Dashboard** developed using **MySQL, SQL, Microsoft Excel, and Power Query**. This project transforms raw retail transaction data into meaningful business insights through data cleaning, analysis, and interactive dashboard visualization.
+## Business Questions
 
-🎯 The dashboard helps businesses understand:
+- Which product category and region generate the most revenue?
+- How does revenue change month to month?
+- Who are the top-spending customers?
+- How loyal are customers (one-time vs repeat)?
+- How can customers be segmented by purchase frequency?
 
-* 📈 Sales Performance
-* 🛍️ Product Trends
-* 👥 Customer Behavior
-* 🔄 Customer Loyalty
-* 🌍 Regional Revenue Distribution
+## Tools
 
----
+| Tool | Used for |
+|---|---|
+| MySQL Workbench / SQL | Data cleaning, joins, CTEs, aggregations, views |
+| Power Query | Joining transactions, products and customers into one model |
+| Microsoft Excel | Pivot Tables, Pivot Charts, Slicers, KPI cards |
 
-## 🎯 Business Objectives
+## Data
 
-This project aims to answer key business questions:
+Three related tables: `customer_profiles` (customer, gender, age, location, join date), `product_inventory` (product, category, price, stock level), and `sales_transaction` (transaction, customer, product, quantity, date, price). Revenue is calculated as `QuantityPurchased * Price`.
 
-✅ Which product category generates the highest revenue?
+After cleaning: **5,000 transactions**, **989 customers**.
 
-✅ Which region contributes the most to overall sales?
+## Data Cleaning (`01_data_cleaning_eda.sql`)
 
-✅ How does revenue change over time?
+- Checked every key column for NULL and blank values.
+- Replaced missing `Location` values with `unknown` and set impossible ages (below 0 or above 100) to NULL.
+- Found duplicate `TransactionID` rows and created `sale_transaction_clean` using `SELECT DISTINCT`.
+- Converted date columns to `DATE` and price to `DECIMAL(10,2)`.
+- Checked quantity and price for zero or negative values.
+- Added primary keys on customer, transaction, product and subcategory tables.
 
-✅ Who are the top spending customers?
+## SQL Analysis (`02_data_analysis.sql`, `03_views.sql`)
 
-✅ What is the customer loyalty distribution?
+Queries cover total revenue, average transaction value, top and bottom 10 products, revenue by category, gender and location, top 10 customers, orders per customer, monthly trend and loyalty split.
 
-✅ How are customers segmented based on purchasing behavior?
+Views created for the dashboard: `product_revenue`, `category_revenue`, `customer_spending`, `gender_category_revenue`, `category_location_revenue`, `monthly_trend`, `customer_segments`, `customer_loyalty`.
 
----
+Customer segments in the final view: **low** (1-3 orders), **mid** (4-10), **high value** (more than 10).
 
-## 🛠️ Tools & Technologies
+## Dashboard (`Dashboard_Retail_analytics.xlsx`)
 
-| Tool                  | Purpose                           |
-| --------------------- | --------------------------------- |
-| 🐬 MySQL Workbench    | Database Management               |
-| 💻 SQL                | Data Cleaning & Analysis          |
-| 📊 Microsoft Excel    | Dashboard Development             |
-| ⚡ Power Query         | Data Integration & Transformation |
-| 📈 Pivot Tables       | Business Analysis                 |
-| 🎨 Data Visualization | Insight Generation                |
+KPI cards (total revenue, customers, transactions), monthly revenue trend, revenue by category, category by location, customer segments, loyalty split, top 10 customers, revenue by gender and category, with Category and Location slicers.
 
----
+## Key Findings (verified against the workbook)
 
-## 📂 Dataset Information
+| Metric | Result |
+|---|---|
+| Total revenue | 1,209,042 (currency not specified in source data) |
+| Top category | Clothing, 669,913 (about 55% of revenue) |
+| Top region | East, 334,087 (about 28%); South and West are close behind |
+| Peak month | June, 323,463 (about 27% of revenue) |
+| Repeat customers | 96% (950 of 989) |
+| Segments | 279 low, 690 mid, 20 high value |
 
-### 👥 Customer Data
+## Recommendations
 
-* 🆔 Customer ID
-* 🚻 Gender
-* 🎂 Age
-* 📍 Location
-* 📅 Join Date
+- Keep Clothing stock availability high, since it drives most of the revenue.
+- Review marketing in the North region, which has the lowest revenue.
+- Investigate what drove June sales and test whether it can be repeated.
+- Beauty & Health is the weakest category; test promotions before changing inventory.
 
-### 🛒 Product Data
+## Limitations
 
-* 🆔 Product ID
-* 🏷️ Product Category
-* 📦 Product Subcategory
-* 💰 Price
-* 📊 Stock Quantity
+- Transaction dates in the source file span 2001-2031 and the data covers only January to July of each year, so the monthly view groups by calendar month and should be treated as illustrative rather than a real seasonal pattern.
+- The dataset appears synthetic; results demonstrate the analysis method, not real business performance.
+- 69 transactions have an `unknown` location.
 
-### 💳 Transaction Data
+## Repository Contents
 
-* 🆔 Transaction ID
-* 👤 Customer ID
-* 📦 Product ID
-* 🔢 Quantity Purchased
-* 📅 Transaction Date
+| File | Description |
+|---|---|
+| `01_data_cleaning_eda.sql` | Cleaning and validation |
+| `02_data_analysis.sql` | Business questions and queries |
+| `03_views.sql` | Views used by the dashboard |
+| `Dashboard_Retail_analytics.xlsx` | Dashboard and supporting pivots |
 
----
+Run the SQL files in order in MySQL Workbench after importing the three source CSVs into a database named `retail_analytics_db`.
 
-## 🧹 Data Cleaning & Preparation
+## Author
 
-### 👥 Customer Profiles
-
-✔️ Handled missing location values
-
-✔️ Corrected invalid age values
-
-✔️ Standardized gender and location fields
-
-✔️ Added Primary Key constraints
-
-### 💳 Sales Transactions
-
-✔️ Removed duplicate transactions
-
-✔️ Converted date fields into DATE format
-
-✔️ Validated quantity and pricing data
-
-### 📦 Product Inventory
-
-✔️ Standardized category names
-
-✔️ Validated stock and pricing records
-
----
-
-## 🔍 SQL Analysis
-
-Several SQL queries and views were developed to support business decision-making.
-
-### 💰 Revenue Analysis
-
-* 📈 Total Revenue
-* 📅 Monthly Revenue Trends
-* 🏷️ Revenue by Product Category
-* 🌍 Revenue by Region
-
-### 👥 Customer Analysis
-
-* 🎯 Customer Segmentation
-* 🔄 Customer Loyalty Analysis
-* 💎 Top Spending Customers
-
-### 🗄️ SQL Views Created
-
-* 📊 category_revenue
-* 📈 monthly_trend
-* 👥 customer_segments
-* ❤️ customer_loyalty
-* 💰 customer_spending
-* 🚻 gender_category_revenue
-* 🌍 category_location_revenue
-
----
-
-## 📊 Dashboard Features
-
-### 🎯 KPI Cards
-
-💰 Total Revenue
-
-👥 Total Customers
-
-🛒 Total Transactions
-
-### 📈 Interactive Visualizations
-
-* 📅 Monthly Revenue Trend
-* 🏷️ Revenue by Product Category
-* 🌍 Revenue by Category Across Locations
-* 👥 Customer Segment Distribution
-* ❤️ Customer Loyalty Distribution
-* 💎 Top 10 Customers by Spending
-* 🚻 Revenue by Gender and Category
-
-### 🎛️ Interactive Filters
-
-* 🏷️ Product Category
-* 📍 Customer Location
-
----
-
-## 🔑 Key Insights
-
-📌 Clothing generated the highest overall revenue.
-
-📌 East region recorded the strongest sales performance.
-
-📌 Approximately **96%** of customers were repeat buyers.
-
-📌 Revenue peaked during **June**.
-
-📌 Electronics and Home & Kitchen contributed moderate revenue.
-
----
-
-## 💡 Business Recommendations
-
-✅ Increase inventory availability for Clothing products.
-
-✅ Focus marketing efforts on lower-performing regions.
-
-✅ Introduce loyalty rewards for one-time buyers.
-
-✅ Promote Electronics and Home & Kitchen through targeted campaigns.
-
-✅ Analyze June sales drivers and replicate successful strategies.
-
----
-
-
-## 🎓 Project Outcome
-
-This project demonstrates practical expertise in:
-
-⭐ SQL Data Cleaning
-
-⭐ Exploratory Data Analysis (EDA)
-
-⭐ Business Intelligence
-
-⭐ Power Query Data Integration
-
-⭐ Dashboard Development
-
-⭐ Data Visualization
-
-⭐ Customer Segmentation
-
-⭐ Revenue Analytics
-
-⭐ Business Insight Generation
-
----
-
-## 🚀 Final Impact
-
-By combining **SQL, Excel, Power Query, and Business Intelligence techniques**, this project transforms raw retail data into actionable insights that support smarter business decisions, improved customer understanding, and revenue growth.
-
-### 👩‍💻 Developed by 
-Sukanya Saha 
-Research Scholar,CSIR-IICT Hyderabad|
-MSC in Chemistry (IIT Madras)|
-🔬 Chemist | 📊 Aspiring Data Scientist | 📈 Data Analytics Enthusiast
+**Sukanya Saha** | [LinkedIn](https://www.linkedin.com/in/sukanya-saha-921a20295) | [Portfolio](https://sukanya-portfolio-rust.vercel.app/)

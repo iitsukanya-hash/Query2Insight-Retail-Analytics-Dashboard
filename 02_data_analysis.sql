@@ -1,3 +1,6 @@
+-- NOTE: the customer_segments view (search "#146") uses an earlier threshold (1-10 / 11-30 / >30 orders).
+-- The final definition used by the dashboard is in 03_views.sql (low 1-3, mid 4-10, high value >10).
+
 use retail_analytics_db;
 show table status;
 # Q1 How many customers are there?
